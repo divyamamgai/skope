@@ -1,0 +1,15 @@
+{
+  "name": "skope",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Divya Mamgai <divyamamgai21@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "acorn": "^6.1.1",
+    "acorn-globals": "^4.3.0",
+    "acorn-walk": "^6.1.1",
+    "eslint": "^5.16.0",
+    "graphviz": "^0.0.8",
+    "yaml": "^1.4.0"
+  }
+}
