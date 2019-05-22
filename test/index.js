@@ -1,9 +1,12 @@
+const fs = require('fs')
 const path = require('path')
 
 const runner = require('./runner')
 
-const SAMPLE_COUNT = 2
+const SAMPLE_DIRECTORY_PATH = path.join(__dirname, '/samples')
 
-for (let i = 1; i <= SAMPLE_COUNT; i++) {
-  runner(path.join(__dirname, `/samples/${i}.js`))
+const samples = fs.readdirSync(SAMPLE_DIRECTORY_PATH)
+
+for (const sample of samples) {
+  runner(path.join(SAMPLE_DIRECTORY_PATH, sample))
 }
