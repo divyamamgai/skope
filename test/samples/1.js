@@ -11,5 +11,5 @@ var a = 1;
 })();
 
 function e() {
-  console.log('e for esse');
+  console.log("I'm too lazy to write a good example.");
 }
