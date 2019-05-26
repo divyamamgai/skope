@@ -54,9 +54,9 @@ const tree = acorn.Parser.parse(data)
 console.log(tree)
 ```
 
-To visualize the generated tree I have written a [script](https://github.com/divyamamgai/skope/blob/master/test/createGraph.js) which creates a [SVG](https://raw.githubusercontent.com/divyamamgai/skope/master/test/fileGraph.svg?sanitize=true) file of the tree, attached below. I recommend console logging or debugging the nodes to get more insights, currently its just a nutshell and only shows the `type` of the nodes.
+To visualize the generated tree I have written a [script](https://github.com/divyamamgai/skope/blob/master/test/createGraph.js) which creates a [SVG](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true) file of the tree, attached below. I recommend console logging or debugging the nodes to get more insights, currently its just a nutshell and only shows the `type` of the nodes.
 
-![AST Visualization](https://raw.githubusercontent.com/divyamamgai/skope/master/test/fileGraph.svg?sanitize=true)
+![AST Visualization](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true)
 
 Now we can traverse the resulting tree in a number of fashions using Acorn AST walker outlined [here](https://github.com/acornjs/acorn/tree/master/acorn-walk#interface), take time to read these methods before moving forward. We will be using the `ancestor` walker, which does a `simple` walk over a tree, building up an array of ancestor nodes (including the current node) and passing the resulting array to the callbacks as a second parameter.
 
