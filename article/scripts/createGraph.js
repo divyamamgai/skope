@@ -3,7 +3,7 @@ const path = require('path')
 const acorn = require('acorn')
 const graphviz = require('graphviz')
 
-const FILE_PATH = path.join(__dirname, '/samples/1.js')
+const FILE_PATH = path.join(__dirname, 'sample.js')
 
 // For more info visit - https://www.graphviz.org/doc/info/attrs.html
 const GRAPH_SETTINGS = {
@@ -16,7 +16,7 @@ const GRAPH_SETTINGS = {
 // TODO: Change this value as per your local setup.
 const GRAPHVIZ_BIN_PATH = '/usr/local/Cellar/graphviz/2.40.1/bin'
 
-const FILE_GRAP_PATH = path.join(__dirname, '/fileGraph.svg')
+const FILE_GRAP_PATH = path.join(__dirname, '../images/fileGraph.svg')
 
 const data = fs.readFileSync(FILE_PATH)
 
@@ -25,22 +25,37 @@ const tree = acorn.Parser.parse(data)
 const getNodeID = (node) => `${node.type}_${node.start}_${node.end}`
 
 const addGraphNode = (g, node, parentNode) => {
-  const { body } = node
+  const {
+    body,
+    declarations,
+    expression,
+    callee,
+    id
+  } = node
   const nodeID = getNodeID(node)
+
+  const children = body
+    || declarations
+    || expression
+    || (callee && callee.body)
+    || id
+
   g.addNode(nodeID, {
     label: node.type
   })
+
   if (parentNode) {
     const parentNodeID = getNodeID(parentNode)
+
     g.addEdge(nodeID, parentNodeID, {
       dir: 'none'
     })
   }
-  if (body) {
-    if (body instanceof Array) {
-      body.forEach(bodyNode => addGraphNode(g, bodyNode, node))
+  if (children) {
+    if (children instanceof Array) {
+      children.forEach(childNode => addGraphNode(g, childNode, node))
     } else {
-      addGraphNode(g, body, node)
+      addGraphNode(g, children, node)
     }
   }
 }
