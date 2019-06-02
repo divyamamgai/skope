@@ -1,4 +1,3 @@
-
 const getScope = (ancestors) => {
   let ancestorIndex = ancestors.length - 1
   while (ancestorIndex >= 0) {

@@ -82,3 +82,29 @@ acornWalk.ancestor(tree, {
   }
 })
 ```
+
+### Getting Scope of an Identifier in JavaScript
+
+In JavaScript scope of any identifier is functional (considering ES5 syntax and keeping complexity to a minimum). Hence, if we want to get scope of any identifier node we only need to bubble up its ancestor nodes till we reach a function node (`FunctionExpression` or `FunctionDeclaration`), if we do, which will make it local or functional scoped. Else if we reach `Program` node then it is global scoped. Let's create a simple stub which accepts an array of ancestor nodes on an identifier and return the scope of that identifier as - `"Global"` string or `FunctionExpression|FunctionDeclaration` node.
+
+```js
+const getScope = (ancestors) => {
+  let ancestorIndex = ancestors.length - 1
+  while (ancestorIndex >= 0) {
+    const ancestor = ancestors[ancestorIndex]
+    switch (ancestor.type) {
+      case 'FunctionExpression':
+      case 'FunctionDeclaration':
+        return ancestor
+      case 'Program':
+        return 'Global'
+    }
+    ancestorIndex--
+  }
+  return null
+}
+```
+
+### Variables in Global Scope
+
+In order to know if a Variable or Function declaration is done directly on the global scope, using our graph as basis, it is clear that we need to detect if the direct parent of the declaration node is a `Program` node. To do this we will use `VariableDeclarator` callback (since it will give us the variable name also in `node.id.name`).
