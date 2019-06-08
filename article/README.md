@@ -12,7 +12,7 @@ We will be using Abstract Syntax Tree (or AST for short) to get information abou
 
 > An AST only contains the information related to analyzing the source text, and skips any other extra content that is used while parsing the text.
 
-To build such an AST for our JavaScript files we will be using [acorn](https://github.com/acornjs/acorn) (it is a JavaScript parser) and [acorn-walk](https://github.com/acornjs/acorn/tree/master/acorn-walk) (a syntax tree, generated via acorn, walker). Let's take a sample (very poorly written) JavaScript (ES5) code.
+To build such an AST for our JavaScript files we will be using [acorn](https://github.com/acornjs/acorn) (it is a JavaScript parser) and [acorn-walk](https://github.com/acornjs/acorn/tree/master/acorn-walk) (a syntax tree, generated via acorn, walker). Let's take a sample of (very poorly written) JavaScript (ES5) code.
 
 ```js
 var a = 1;
@@ -39,11 +39,11 @@ function f() {
 
 Before we get to developing a logic to detect declarations let's list down what we would expect the resulting declarations be.
 
-1. Variable `a` and function `e()` are declared in the global scope.
+1. Variable `a` and function `f()` are declared in the global scope.
 2. Variable `d` is a global variable by definition since we have omitted the `var` keyword.
-3. 
+3. Function property `e()` of the `window` object is inherently a global identifier in browsers.
 
-So for our snippet we expect the declarations to be `a`, `e` and `d` (lets stay simple for this example and not separate out functions and variables) which are exposed to other snippets it might get used or included with.
+So for our snippet we expect the declarations to be `a`, `f`, `d` and `e` (lets stay simple for this example and not separate out functions and variables) which are exposed to other snippets it might get used or included with.
 
 To generate AST using acorn first we need to read the JavaScript code from file. The parser returns an AST object as specified by the [ESTree spec](https://github.com/estree/estree), which is a node of type `Program` the body of which contains successive nodes of defined types as per your code snippet.
 
