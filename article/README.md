@@ -60,7 +60,7 @@ const tree = acorn.Parser.parse(data)
 console.log(tree)
 ```
 
-To visualize the generated tree I have written a [script](https://github.com/divyamamgai/skope/blob/master/test/createGraph.js) which creates a [SVG](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true) file of the tree, attached below. I recommend console logging or debugging the nodes to get more insights, currently its just a nutshell and only shows the `type` of the nodes.
+To visualize the generated tree I have written a [script](https://github.com/divyamamgai/skope/blob/master/test/createGraph.js) which creates a [SVG](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true) file of the tree (excluding some nodes), attached below. I recommend console logging or debugging the nodes to get more insights, currently its just a nutshell and only shows the `type` of the nodes.
 
 ![AST Visualization](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true)
 

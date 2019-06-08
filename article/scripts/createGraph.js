@@ -30,6 +30,8 @@ const addGraphNode = (g, node, parentNode) => {
     declarations,
     expression,
     callee,
+    left,
+    right,
     id
   } = node
   const nodeID = getNodeID(node)
@@ -38,6 +40,7 @@ const addGraphNode = (g, node, parentNode) => {
     || declarations
     || expression
     || (callee && callee.body)
+    || (left && right && [left, right])
     || id
 
   g.addNode(nodeID, {
