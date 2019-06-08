@@ -35,7 +35,13 @@ const skope = {
 
         declarations.push(name)
 
-        if (getScope(ancestors.slice(0, -2)) === 'Global') {
+        /*
+        `ancestors` contains the `VariableDeclarator` node itself,
+        hence we can remove it.  Also `VariableDeclarator` nodes
+        are preceeded by `VariableDeclaration` node and hence we
+        can omit them too.
+        */
+        if (getScope(ancestors.slice(0, -2)).type === 'Program') {
           globalDeclarations.push(name)
         }
       },
@@ -44,7 +50,7 @@ const skope = {
 
         declarations.push(name)
 
-        if (getScope(ancestors.slice(0, -1)) === 'Global') {
+        if (getScope(ancestors.slice(0, -1)).type === 'Program') {
           globalDeclarations.push(name)
         }
       },
@@ -55,18 +61,21 @@ const skope = {
 
         switch (node.left.type) {
           case 'Identifier':
-            if (scope !== 'Global') {
+            if (scope.type !== 'Program') {
               if (scope.params.findIndex(p => p.name === name) === -1) {
-                assignmentsHash[name] = 1
+                assignmentsHash[name] = assignmentsHash[name] || 0
+                assignmentsHash[name]++
               }
             } else {
-              assignmentsHash[name] = 1
+              assignmentsHash[name] = assignmentsHash[name] || 0
+              assignmentsHash[name]++
             }
             break
           case 'MemberExpression':
             nameSplit = name.split('.')
             if (nameSplit[0] === 'window' && nameSplit.length === 2) {
-              assignmentsHash[nameSplit[1]] = 1
+              assignmentsHash[nameSplit] = assignmentsHash[nameSplit] || 0
+              assignmentsHash[nameSplit]++
             }
             break
         }

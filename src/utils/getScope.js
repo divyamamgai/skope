@@ -5,9 +5,8 @@ const getScope = (ancestors) => {
     switch (ancestor.type) {
       case 'FunctionExpression':
       case 'FunctionDeclaration':
-        return ancestor
       case 'Program':
-        return 'Global'
+        return ancestor
     }
     ancestorIndex--
   }

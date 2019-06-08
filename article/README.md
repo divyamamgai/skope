@@ -1,4 +1,4 @@
-# Coding with sight skope
+# Coding with Sight Skope
 
 (scope is written as skope purposefully :P)
 
@@ -22,12 +22,17 @@ var a = 1;
 
   console.log(b);
 
+  // FIXME: Unused function declarations are also counted.
   function c() {
     d = 3;
   }
+
+  window.e = function () {
+    b++;
+  };
 })();
 
-function e() {
+function f() {
   console.log("I'm too lazy to write a good example.");
 }
 ```
@@ -36,6 +41,7 @@ Before we get to developing a logic to detect declarations let's list down what 
 
 1. Variable `a` and function `e()` are declared in the global scope.
 2. Variable `d` is a global variable by definition since we have omitted the `var` keyword.
+3. 
 
 So for our snippet we expect the declarations to be `a`, `e` and `d` (lets stay simple for this example and not separate out functions and variables) which are exposed to other snippets it might get used or included with.
 
@@ -58,7 +64,7 @@ To visualize the generated tree I have written a [script](https://github.com/div
 
 ![AST Visualization](https://raw.githubusercontent.com/divyamamgai/skope/master/article/images/fileGraph.svg?sanitize=true)
 
-Now we can traverse the resulting tree in a number of fashions using Acorn AST walker outlined [here](https://github.com/acornjs/acorn/tree/master/acorn-walk#interface), take time to read these methods before moving forward. We will be using the `ancestor` walker, which does a `simple` walk over a tree, building up an array of ancestor nodes (including the current node) and passing the resulting array to the callbacks as a second parameter.
+Now we can traverse the resulting tree in a number of ways using Acorn AST walker as outlined [here](https://github.com/acornjs/acorn/tree/master/acorn-walk#interface), take time to read these methods before moving forward. We will be using the `ancestor` walker, which does a `simple` walk over a tree, building up an array of ancestor nodes (including the current node) and passing the resulting array to the callbacks as a second parameter.
 
 You can associate callback to each node type. As soon as the walker reaches a particular node, it fires the callback for that node with `node` and its `ancestors` as parameters.
 
@@ -85,7 +91,7 @@ acornWalk.ancestor(tree, {
 
 ### Getting Scope of an Identifier in JavaScript
 
-In JavaScript scope of any identifier is functional (considering ES5 syntax and keeping complexity to a minimum). Hence, if we want to get scope of any identifier node we only need to bubble up its ancestor nodes till we reach a function node (`FunctionExpression` or `FunctionDeclaration`), if we do, which will make it local or functional scoped. Else if we reach `Program` node then it is global scoped. Let's create a simple stub which accepts an array of ancestor nodes on an identifier and return the scope of that identifier as - `"Global"` string or `FunctionExpression|FunctionDeclaration` node.
+In JavaScript scope of any identifier is functional (considering ES5 syntax and keeping complexity to a minimum). Hence, if we want to get scope of any identifier node we only need to bubble up its ancestor nodes till we reach a function node (`FunctionExpression` or `FunctionDeclaration`), if we do, which will make it local or functional scoped. Else if we reach `Program` node then it is global scoped. Let's create a simple stub which accepts an array of ancestor nodes of an identifier and return the scope of that identifier as - `Program|FunctionExpression|FunctionDeclaration` node.
 
 ```js
 const getScope = (ancestors) => {
@@ -95,9 +101,8 @@ const getScope = (ancestors) => {
     switch (ancestor.type) {
       case 'FunctionExpression':
       case 'FunctionDeclaration':
-        return ancestor
       case 'Program':
-        return 'Global'
+        return ancestor
     }
     ancestorIndex--
   }
@@ -105,6 +110,45 @@ const getScope = (ancestors) => {
 }
 ```
 
-### Variables in Global Scope
+### Direct Declarations in Global Scope
 
-In order to know if a Variable or Function declaration is done directly on the global scope, using our graph as basis, it is clear that we need to detect if the direct parent of the declaration node is a `Program` node. To do this we will use `VariableDeclarator` callback (since it will give us the variable name also in `node.id.name`).
+In order to know if a Variable or Function declaration is done directly on the global scope, using our graph as basis, it is clear that we need to detect if the direct parent of the declaration node is a `Program` node. To do this we will use `VariableDeclarator` and `FunctionDeclaration` callbacks (since it will give us the identifier name as `node.id.name`) with ancestor walker. We will use `getScope` stub to get the scope of the node and compare the scope node type to `Program`, if yes we push it to `globalDeclarations` list.
+
+```js
+const fs = require('fs')
+const path = require('path')
+const acorn = require('acorn')
+const acornWalk = require('acorn-walk')
+
+const FILE_PATH = path.join(__dirname, 'sample.js')
+
+const data = fs.readFileSync(FILE_PATH).toString()
+const tree = acorn.Parser.parse(data)
+
+let globalDeclarations = []
+
+acornWalk.ancestor(tree, {
+  VariableDeclarator (node, ancestors) {
+    const name = node.id.name
+
+    /*
+    `ancestors` contains the `VariableDeclarator` node itself,
+    hence we can remove it.  Also `VariableDeclarator` nodes
+    are preceeded by `VariableDeclaration` node and hence we
+    can omit them too.
+    */
+    if (getScope(ancestors.slice(0, -2)).type === 'Program') {
+      globalDeclarations.push(name)
+    }
+  },
+  FunctionDeclaration (node, ancestors) {
+    const name = node.id.name
+
+    if (getScope(ancestors.slice(0, -1)).type === 'Program') {
+      globalDeclarations.push(name)
+    }
+  }
+})
+
+console.log(globalDeclarations)
+```
