@@ -8,7 +8,7 @@ I was working on a frontend project which had lots of contributors and coding st
 
 ## Building a sight skope
 
-We will be using Abstract Syntax Tree (or AST for short) to get information about our code which we can analysis easily. I won't be getting into much detail regarding AST here, since [this](https://medium.com/basecs/leveling-up-ones-parsing-game-with-asts-d7a6fc2400ff) article covers it pretty well so do give it a read. To sum it up quite nicely and move forward without much deeper dive -
+We will be using Abstract Syntax Tree (or AST for short) to get information about our code which we can analyse easily. I won't be getting into much detail regarding AST here, since [this](https://medium.com/basecs/leveling-up-ones-parsing-game-with-asts-d7a6fc2400ff) article covers it pretty well so do give it a read. To sum it up quite nicely and move forward without much deeper dive -
 
 > An AST only contains the information related to analyzing the source text, and skips any other extra content that is used while parsing the text.
 

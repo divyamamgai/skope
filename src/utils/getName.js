@@ -1,5 +1,6 @@
 const getName = (node) => {
   let name = ''
+
   switch (node.type) {
     case 'Identifier':
       name = node.name
@@ -8,6 +9,7 @@ const getName = (node) => {
       name = `${getName(node.object)}.${getName(node.property)}`
       break
   }
+
   return name
 }
 
