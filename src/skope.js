@@ -74,8 +74,8 @@ const skope = {
           case 'MemberExpression':
             nameSplit = name.split('.')
             if (nameSplit[0] === 'window' && nameSplit.length === 2) {
-              assignmentsHash[nameSplit] = assignmentsHash[nameSplit] || 0
-              assignmentsHash[nameSplit]++
+              assignmentsHash[nameSplit[1]] = assignmentsHash[nameSplit[1]] || 0
+              assignmentsHash[nameSplit[1]]++
             }
             break
         }
