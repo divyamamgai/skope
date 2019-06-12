@@ -152,3 +152,33 @@ acornWalk.ancestor(tree, {
 
 console.log(globalDeclarations)
 ```
+
+### Indirect Declarations in Global Scope
+
+An identifier can be declared in the global scope indirectly, even from a functional block. We will be focusing on two methods this can be achieved -
+
+1. Creating property of an identifier in the `window` object.
+2. Omitting `var` keyword while declaring (or assigning) an identifier.
+
+In order to detect the above two cases we will be using the `AssignmentExpression` node since in both an assignment is being performed. `AssignmentExpression` node has two child nodes - `left` and `right`.
+
+For case #1 we have to check if the `left` node of the `AssignmentExpression` is a `MemberExpression` of the `window` object. A `MemberExpression` accesses an object's member or property (for example `window.location`). So in context of `AssignmentExpression` we are accessing a specified key of the `window` object and assigning a value to it.
+
+Before we move ahead lets write a simple utility `getName()` to get us a readable name from the `MemberExpression` node. In a `MemberExpression` node we have two properties - `object` and `property`. `object` will be an `Identifier` whereas `property` will be `Identifier|MemberExpression` and hence we will need to recursively call the utility till we reach an `Identifier` node whose name can be get using `name` property.
+
+```js
+const getName = (node) => {
+  let name = ''
+
+  switch (node.type) {
+    case 'Identifier':
+      name = node.name
+      break
+    case 'MemberExpression':
+      name = `${getName(node.object)}.${getName(node.property)}`
+      break
+  }
+
+  return name
+}
+```
