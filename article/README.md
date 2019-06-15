@@ -155,7 +155,7 @@ acornWalk.ancestor(tree, {
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our `sample.js`), we expect the output to be `a` and `f`.
+When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a` and `f`.
 
 ### Indirect Declarations in Global Scope
 
@@ -165,6 +165,8 @@ An identifier can be declared in the global scope indirectly, even from a functi
 2. Omitting `var` keyword while declaring (or assigning) an identifier.
 
 In order to detect the above two cases we will be using the [`AssignmentExpression`](https://github.com/estree/estree/blob/master/es5.md#assignmentexpression) node since in both an assignment is being performed. `AssignmentExpression` node has two child nodes - `left` and `right`.
+
+#### Case #1
 
 For case #1 we have to check if the `left` node of the `AssignmentExpression` is a [`MemberExpression`](https://github.com/estree/estree/blob/master/es5.md#memberexpression) of the `window` object. A `MemberExpression` accesses an object's member or property (for example `window.location`). So in context of `AssignmentExpression` we are accessing a specified key of the `window` object and assigning a value to it.
 
@@ -230,4 +232,77 @@ const globalDeclarations = Object.keys(assignmentsHash)
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our `sample.js`), we expect the output to be `e`.
+When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `e`.
+
+#### Case #2
+
+For case #2 it will be a bit complicated. To detect if the `var` keyword was omitted one easy way is as follows.
+
+1. Capture all of the declarations made in the given snippet.
+2. Capture all of the assignments made to non-function parameter identifiers in the given snippet.
+3. Filter out all of the captured identifier assignments which have corresponding declarations.
+
+We have already seen how we can capture declarations in the previous sections. Lets see how we can capture the assignment of identifiers, specially non-function parameter ones. What do we mean by "non-function paramter"? We can re-assign value to the function parameters without using `var` keyword. For these parameters there won't be a declaration counterpart, and hence we will have to exclude them beforehand.
+
+To detect if the assignment is being done to a function parameter we can utilize our `getScope(node)` utility to get function in the scope of which assignment is being done. To keep complexity to a minimum let us consider that assignment is not being done in a nested function to the parameters of parent function (inorder to detect this we can convert our `getScope(node)` utility to return an array of scopes and then we can iterate over all of the nested scopes to identify such function parameters). We only have to check if the identifier in question belongs in the `params` array of the [function](https://github.com/estree/estree/blob/master/es5.md#functions) in scope. If the assignment is being done in the global (or `Program`) scope we can directly include it in our list of assignments.
+
+```js
+const fs = require('fs')
+const path = require('path')
+const acorn = require('acorn')
+const acornWalk = require('acorn-walk')
+
+const getName = require('../../src/utils/getName')
+const getScope = require('../../src/utils/getScope')
+
+const FILE_PATH = path.join(__dirname, 'sample.js')
+
+const data = fs.readFileSync(FILE_PATH).toString()
+const tree = acorn.Parser.parse(data)
+
+let declarations = []
+let assignmentsHash = {}
+
+acornWalk.ancestor(tree, {
+  VariableDeclarator (node) {
+    const name = node.id.name
+
+    declarations.push(name)
+  },
+  FunctionDeclaration (node) {
+    const name = node.id.name
+
+    declarations.push(name)
+  },
+  AssignmentExpression (node, ancestors) {
+    const name = getName(node.left)
+    const scope = getScope(ancestors)
+
+    switch (node.left.type) {
+      case 'Identifier':
+        if (scope.type !== 'Program') {
+          /*
+          If it is a function scope, we need to check if the
+          identifier being assigned is not a parameter of
+          that function.
+          */
+          if (scope.params.findIndex(p => p.name === name) === -1) {
+            assignmentsHash[name] = assignmentsHash[name] || 0
+            assignmentsHash[name]++
+          }
+        } else {
+          assignmentsHash[name] = assignmentsHash[name] || 0
+          assignmentsHash[name]++
+        }
+        break
+    }
+  }
+})
+
+const assignments = Object.keys(assignmentsHash)
+const globalDeclarations = assignments.filter(assignment => !declarations.includes(assignment))
+
+console.log(globalDeclarations)
+```
+
+When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `d`.
