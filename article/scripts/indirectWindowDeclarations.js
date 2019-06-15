@@ -14,7 +14,7 @@ const tree = acorn.Parser.parse(data)
 let assignmentsHash = {}
 
 acornWalk.ancestor(tree, {
-  AssignmentExpression (node, ancestors) {
+  AssignmentExpression (node) {
     const name = getName(node.left)
 
     switch (node.left.type) {
