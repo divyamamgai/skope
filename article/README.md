@@ -2,11 +2,11 @@
 
 (scope is written as skope purposefully :P)
 
-## Need for sight skope
+## Need for Sight Skope
 
 I was working on a frontend project which had lots of contributors and coding style was not in place. This meant different developers writing different patterns. As the project grew and different javascript files exposed different classes and modules (not using module exports :( just to be clear) it became difficult to identify which file was dependent on the other. This meant that debugging and fixing code smell was really difficult.
 
-## Building a sight skope
+## Building a Sight Skope
 
 We will be using Abstract Syntax Tree (or AST for short) to get information about our code which we can analyse easily. I won't be getting into much detail regarding AST here, since [this](https://medium.com/basecs/leveling-up-ones-parsing-game-with-asts-d7a6fc2400ff) article covers it pretty well so do give it a read. To sum it up quite nicely and move forward without much deeper dive -
 
@@ -198,7 +198,6 @@ const acorn = require('acorn')
 const acornWalk = require('acorn-walk')
 
 const getName = require('../../src/utils/getName')
-const getScope = require('../../src/utils/getScope')
 
 const FILE_PATH = path.join(__dirname, 'sample.js')
 
@@ -306,3 +305,81 @@ console.log(globalDeclarations)
 ```
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `d`.
+
+### End Product
+
+Putting together everything mentioned in the previous sections we can get all of the global declarations made in a given snippet of JavaScript code (with some assumptions made).
+
+```js
+const fs = require('fs')
+const path = require('path')
+const acorn = require('acorn')
+const acornWalk = require('acorn-walk')
+
+const getName = require('../../src/utils/getName')
+const getScope = require('../../src/utils/getScope')
+
+const FILE_PATH = path.join(__dirname, 'sample.js')
+
+const data = fs.readFileSync(FILE_PATH).toString()
+const tree = acorn.Parser.parse(data)
+
+let declarations = []
+let globalDeclarations = []
+let assignmentsHash = {}
+
+acornWalk.ancestor(tree, {
+  VariableDeclarator (node, ancestors) {
+    const name = node.id.name
+
+    declarations.push(name)
+
+    if (getScope(ancestors.slice(0, -2)).type === 'Program') {
+      globalDeclarations.push(name)
+    }
+  },
+  FunctionDeclaration (node, ancestors) {
+    const name = node.id.name
+
+    declarations.push(name)
+
+    if (getScope(ancestors.slice(0, -1)).type === 'Program') {
+      globalDeclarations.push(name)
+    }
+  },
+  AssignmentExpression (node, ancestors) {
+    const name = getName(node.left)
+    const scope = getScope(ancestors)
+
+    switch (node.left.type) {
+      case 'Identifier':
+        if (scope.type !== 'Program') {
+          if (scope.params.findIndex(p => p.name === name) === -1) {
+            assignmentsHash[name] = assignmentsHash[name] || 0
+            assignmentsHash[name]++
+          }
+        } else {
+          assignmentsHash[name] = assignmentsHash[name] || 0
+          assignmentsHash[name]++
+        }
+        break
+      case 'MemberExpression':
+        let nameSplit = name.split('.')
+        if (nameSplit[0] === 'window' && nameSplit.length === 2) {
+          assignmentsHash[nameSplit[1]] = assignmentsHash[nameSplit[1]] || 0
+          assignmentsHash[nameSplit[1]]++
+        }
+        break
+    }
+  }
+})
+
+const assignments = Object.keys(assignmentsHash)
+const globalAssignments = assignments.filter(assignment => !declarations.includes(assignment))
+
+globalDeclarations = globalDeclarations.concat(globalAssignments)
+
+console.log(globalDeclarations)
+```
+
+When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a`, `d`, `e` and `f`.

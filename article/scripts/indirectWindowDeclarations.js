@@ -4,7 +4,6 @@ const acorn = require('acorn')
 const acornWalk = require('acorn-walk')
 
 const getName = require('../../src/utils/getName')
-const getScope = require('../../src/utils/getScope')
 
 const FILE_PATH = path.join(__dirname, 'sample.js')
 
