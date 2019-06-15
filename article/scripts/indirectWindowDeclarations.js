@@ -20,6 +20,10 @@ acornWalk.ancestor(tree, {
     switch (node.left.type) {
       case 'MemberExpression':
         let nameSplit = name.split('.')
+        /*
+        Check if the name of the format - `window.identifier`
+        and extract the `indentifier` name.
+        */
         if (nameSplit[0] === 'window' && nameSplit.length === 2) {
           assignmentsHash[nameSplit[1]] = assignmentsHash[nameSplit[1]] || 0
           assignmentsHash[nameSplit[1]]++
