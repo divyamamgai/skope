@@ -91,7 +91,7 @@ acornWalk.ancestor(tree, {
 
 ### Getting Scope of an Identifier in JavaScript
 
-In JavaScript scope of any identifier is functional (considering ES5 syntax and keeping complexity to a minimum). Hence, if we want to get scope of any identifier node we only need to bubble up its ancestor nodes till we reach a function node (`FunctionExpression` or `FunctionDeclaration`), if we do, which will make it local or functional scoped. Else if we reach `Program` node then it is global scoped. Let's create a simple stub which accepts an array of ancestor nodes of an identifier and return the scope of that identifier as - `Program|FunctionExpression|FunctionDeclaration` node.
+In JavaScript scope of any identifier is functional (considering ES5 syntax and keeping complexity to a minimum). Hence, if we want to get scope of any identifier node we only need to bubble up its ancestor nodes till we reach a function node ([`FunctionExpression`](https://github.com/estree/estree/blob/master/es5.md#functionexpression) or [`FunctionDeclaration`](https://github.com/estree/estree/blob/master/es5.md#functiondeclaration)), if we do, which will make it local or functional scoped. Else if we reach [`Program`](https://github.com/estree/estree/blob/master/es5.md#programs) node then it is global scoped. Let's create a simple stub which accepts an array of ancestor nodes of an identifier and return the scope of that identifier as - `Program|FunctionExpression|FunctionDeclaration` node.
 
 ```js
 const getScope = (ancestors) => {
@@ -112,7 +112,7 @@ const getScope = (ancestors) => {
 
 ### Direct Declarations in Global Scope
 
-In order to know if a Variable or Function declaration is done directly on the global scope, using our graph as basis, it is clear that we need to detect if the direct parent of the declaration node is a `Program` node. To do this we will use `VariableDeclarator` and `FunctionDeclaration` callbacks (since it will give us the identifier name as `node.id.name`) with ancestor walker. We will use `getScope` stub to get the scope of the node and compare the scope node type to `Program`, if yes we push it to `globalDeclarations` list.
+In order to know if a Variable or Function declaration is done directly on the global scope, using our graph as basis, it is clear that we need to detect if the direct parent of the declaration node is a `Program` node. To do this we will use [`VariableDeclarator`](https://github.com/estree/estree/blob/master/es5.md#variabledeclarator) and `FunctionDeclaration` callbacks (since it will give us the identifier name as `node.id.name`) with ancestor walker. We will use `getScope` stub to get the scope of the node and compare the scope node type to `Program`, if yes we push it to `globalDeclarations` list.
 
 ```js
 const fs = require('fs')
@@ -160,11 +160,11 @@ An identifier can be declared in the global scope indirectly, even from a functi
 1. Creating property of an identifier in the `window` object.
 2. Omitting `var` keyword while declaring (or assigning) an identifier.
 
-In order to detect the above two cases we will be using the `AssignmentExpression` node since in both an assignment is being performed. `AssignmentExpression` node has two child nodes - `left` and `right`.
+In order to detect the above two cases we will be using the [`AssignmentExpression`](https://github.com/estree/estree/blob/master/es5.md#assignmentexpression) node since in both an assignment is being performed. `AssignmentExpression` node has two child nodes - `left` and `right`.
 
-For case #1 we have to check if the `left` node of the `AssignmentExpression` is a `MemberExpression` of the `window` object. A `MemberExpression` accesses an object's member or property (for example `window.location`). So in context of `AssignmentExpression` we are accessing a specified key of the `window` object and assigning a value to it.
+For case #1 we have to check if the `left` node of the `AssignmentExpression` is a [`MemberExpression`](https://github.com/estree/estree/blob/master/es5.md#memberexpression) of the `window` object. A `MemberExpression` accesses an object's member or property (for example `window.location`). So in context of `AssignmentExpression` we are accessing a specified key of the `window` object and assigning a value to it.
 
-Before we move ahead lets write a simple utility `getName()` to get us a readable name from the `MemberExpression` node. In a `MemberExpression` node we have two properties - `object` and `property`. `object` will be an `Identifier` whereas `property` will be `Identifier|MemberExpression` and hence we will need to recursively call the utility till we reach an `Identifier` node whose name can be get using `name` property.
+Before we move ahead lets write a simple utility `getName()` to get us a readable name from the `MemberExpression` node. In a `MemberExpression` node we have two properties - `object` and `property`. `object` will be an [`Identifier`](https://github.com/estree/estree/blob/master/es5.md#identifier) whereas `property` will be `Identifier|MemberExpression` and hence we will need to recursively call the utility till we reach an `Identifier` node whose name can be get using `name` property.
 
 ```js
 const getName = (node) => {
