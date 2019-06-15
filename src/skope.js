@@ -57,7 +57,6 @@ const skope = {
       AssignmentExpression (node, ancestors) {
         const name = getName(node.left)
         const scope = getScope(ancestors)
-        let nameSplit
 
         switch (node.left.type) {
           case 'Identifier':
@@ -72,7 +71,7 @@ const skope = {
             }
             break
           case 'MemberExpression':
-            nameSplit = name.split('.')
+            let nameSplit = name.split('.')
             if (nameSplit[0] === 'window' && nameSplit.length === 2) {
               assignmentsHash[nameSplit[1]] = assignmentsHash[nameSplit[1]] || 0
               assignmentsHash[nameSplit[1]]++

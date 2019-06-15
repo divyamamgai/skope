@@ -120,6 +120,8 @@ const path = require('path')
 const acorn = require('acorn')
 const acornWalk = require('acorn-walk')
 
+const getScope = require('../../src/utils/getScope')
+
 const FILE_PATH = path.join(__dirname, 'sample.js')
 
 const data = fs.readFileSync(FILE_PATH).toString()
@@ -153,6 +155,8 @@ acornWalk.ancestor(tree, {
 console.log(globalDeclarations)
 ```
 
+When we execute the above code (with our `sample.js`), we expect the output to be `a` and `f`.
+
 ### Indirect Declarations in Global Scope
 
 An identifier can be declared in the global scope indirectly, even from a functional block. We will be focusing on two methods this can be achieved -
@@ -182,3 +186,44 @@ const getName = (node) => {
   return name
 }
 ```
+
+We have to use `AssignmentExpression` callback of ancestor walker. Call our utility `getName(node.left)` to get name, check if the left node is of type `MemberExpression` and name is of the format - `window.indentifier`. If it does then the `indentifier` is a global variable.
+
+```js
+const fs = require('fs')
+const path = require('path')
+const acorn = require('acorn')
+const acornWalk = require('acorn-walk')
+
+const getName = require('../../src/utils/getName')
+const getScope = require('../../src/utils/getScope')
+
+const FILE_PATH = path.join(__dirname, 'sample.js')
+
+const data = fs.readFileSync(FILE_PATH).toString()
+const tree = acorn.Parser.parse(data)
+
+let assignmentsHash = {}
+
+acornWalk.ancestor(tree, {
+  AssignmentExpression (node, ancestors) {
+    const name = getName(node.left)
+
+    switch (node.left.type) {
+      case 'MemberExpression':
+        let nameSplit = name.split('.')
+        if (nameSplit[0] === 'window' && nameSplit.length === 2) {
+          assignmentsHash[nameSplit[1]] = assignmentsHash[nameSplit[1]] || 0
+          assignmentsHash[nameSplit[1]]++
+        }
+        break
+    }
+  }
+})
+
+const globalDeclarations = Object.keys(assignmentsHash)
+
+console.log(globalDeclarations)
+```
+
+When we execute the above code (with our `sample.js`), we expect the output to be `e`.
