@@ -306,7 +306,7 @@ console.log(globalDeclarations)
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `d`.
 
-### Putting it All Together
+### Piecing it Together
 
 Putting together everything mentioned in the previous sections we can get all of the global declarations made in a given snippet of JavaScript code (with some assumptions made).
 
@@ -384,7 +384,7 @@ console.log(globalDeclarations)
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a`, `d`, `e` and `f`.
 
-### Limitations of Our Solution
+### Limitations of our Sight Skope
 
 If you are a keen observer and have been experimenting on your own along the way, you might have noticed there are some obvious limitations with our current solution. Here are some of those limitations.
 
@@ -393,3 +393,9 @@ If you are a keen observer and have been experimenting on your own along the way
 3. Functional parameters of the parent functions are not excluded from assignment.
 
 These limitations can be resolved, but the solutions will become much more complicated for an intro to AST and what all can be done with it.
+
+## Using Sight Skope in Combat
+
+## Power of AST
+
+A lot can be achived using ASTs. They can help you in performing critical code analysis like figuring out [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) of your code base, keeping it [under control](https://dev.to/designpuddle/coding-concepts---cyclomatic-complexity-3blk). Another interesting use of ASTs is [code modding](https://www.toptal.com/javascript/write-code-to-rewrite-your-code), with this you can essentially re-write your code to adhere to newer [framework](https://github.com/reactjs/react-codemod) or language specific standards without any developer efforts. You have already seen a usage outlined in this article, which helps in figuring out dependencies between legacy JavaScript, the pre import and export era. There is always a scope for this tech in your development to ease the process a bit, you just have to figure it out.
