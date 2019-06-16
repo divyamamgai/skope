@@ -306,7 +306,7 @@ console.log(globalDeclarations)
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `d`.
 
-### End Product
+### Putting it All Together
 
 Putting together everything mentioned in the previous sections we can get all of the global declarations made in a given snippet of JavaScript code (with some assumptions made).
 
@@ -383,3 +383,13 @@ console.log(globalDeclarations)
 ```
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a`, `d`, `e` and `f`.
+
+### Limitations of Our Solution
+
+If you are a keen observer and have been experimenting on your own along the way, you might have notice there are some obvious limitations with our current solution. Here are some of those limitations.
+
+1. Declarations in an unused function are also considered.
+2. Functional parameters of the parent functions are not excluded.
+3. Modifications made to `window` object or it being passed as a parameter to functions is not considered.
+
+These limitations can be resolved, but the solutions will become much more complicated for an intro to AST and what all can be done with it.
