@@ -386,10 +386,10 @@ When we execute the above code (with our [`sample.js`](https://github.com/divyam
 
 ### Limitations of Our Solution
 
-If you are a keen observer and have been experimenting on your own along the way, you might have notice there are some obvious limitations with our current solution. Here are some of those limitations.
+If you are a keen observer and have been experimenting on your own along the way, you might have noticed there are some obvious limitations with our current solution. Here are some of those limitations.
 
 1. Declarations in an unused function are also considered.
-2. Functional parameters of the parent functions are not excluded.
-3. Modifications made to `window` object or it being passed as a parameter to functions is not considered.
+2. References to `window` object is not considered.
+3. Functional parameters of the parent functions are not excluded from assignment.
 
 These limitations can be resolved, but the solutions will become much more complicated for an intro to AST and what all can be done with it.
