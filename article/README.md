@@ -1,12 +1,12 @@
-# Coding with Sight Skope
+# Developing with Sight Skope
 
 (scope is written as skope purposefully :P)
 
-## Need for Sight Skope
+## Motivation
 
-I was working on a frontend project which had lots of contributors and coding style was not in place. This meant different developers writing different patterns. As the project grew and different javascript files exposed different classes and modules (not using module exports :( just to be clear) it became difficult to identify which file was dependent on the other. This meant that debugging and fixing code smell was really difficult.
+I was working on a frontend project which had lots of contributors and coding style was missplaced somewhere along the way. This meant different developers writing different patterns. As the project grew and different javascript files exposed different classes and modules (not using module exports :( just to be clear) it became difficult to identify which file was dependent on the other. This meant that debugging and fixing code smell was really difficult. Not to mention the circular dependency hell. Just like with a gun I needed a scope to better aim at bugs.
 
-## Building a Sight Skope
+## Developing a Scope Calculator
 
 We will be using Abstract Syntax Tree (or AST for short) to get information about our code which we can analyse easily. I won't be getting into much detail regarding AST here, since [this](https://medium.com/basecs/leveling-up-ones-parsing-game-with-asts-d7a6fc2400ff) article covers it pretty well so do give it a read. To sum it up quite nicely and move forward without much deeper dive -
 
@@ -384,7 +384,7 @@ console.log(globalDeclarations)
 
 When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a`, `d`, `e` and `f`.
 
-### Limitations of our Sight Skope
+### Limitations of our solution
 
 If you are a keen observer and have been experimenting on your own along the way, you might have noticed there are some obvious limitations with our current solution. Here are some of those limitations.
 
@@ -394,7 +394,7 @@ If you are a keen observer and have been experimenting on your own along the way
 
 These limitations can be resolved, but the solutions will become much more complicated for an intro to AST and what all can be done with it.
 
-## Using Sight Skope in Combat
+## Using our Scope Calculator
 
 ## Power of AST
 
