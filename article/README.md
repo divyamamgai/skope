@@ -1,10 +1,8 @@
-# Developing with Sight Skope
-
-(scope is written as skope purposefully :P)
+# Developing better code using ASTs
 
 ## Motivation
 
-I was working on a frontend project which had lots of contributors and coding style was misplaced somewhere along the way. This meant different developers writing different patterns. As the project grew and different javascript files exposed different classes and modules (not using module exports :( just to be clear) it became difficult to identify which file was dependent on the other. This meant that debugging and fixing code smell was difficult. Not to mention the circular dependency hell. Just like with a gun I needed a scope to better aim at bugs.
+I was working on a frontend project which had lots of contributors and coding style was misplaced somewhere along the way. This meant different developers writing different patterns. As the project grew and different JavaScript files exposed different classes and modules (not using module exports :( just to be clear) it became difficult to identify which file was dependent on the other. This meant that debugging and fixing code smell was difficult. Not to mention the circular dependency hell. Just like with a gun I needed a scope to better aim at bugs.
 
 ## Developing a Scope Calculator
 
