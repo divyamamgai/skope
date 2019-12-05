@@ -153,7 +153,7 @@ acornWalk.ancestor(tree, {
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a` and `f`.
+When we execute the above code (with our [`sample.js`](https://gist.github.com/divyamamgai/93c1b55e7c38faa6f28e10df555da862)), we expect the output to be `a` and `f`.
 
 ### Indirect Declarations in Global Scope
 
@@ -229,7 +229,7 @@ const globalDeclarations = Object.keys(assignmentsHash)
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `e`.
+When we execute the above code (with our [`sample.js`](https://gist.github.com/divyamamgai/93c1b55e7c38faa6f28e10df555da862)), we expect the output to be `e`.
 
 #### Case #2
 
@@ -302,7 +302,7 @@ const globalDeclarations = assignments.filter(assignment => !declarations.includ
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `d`.
+When we execute the above code (with our [`sample.js`](https://gist.github.com/divyamamgai/93c1b55e7c38faa6f28e10df555da862)), we expect the output to be `d`.
 
 ### Piecing it Together
 
@@ -380,7 +380,7 @@ globalDeclarations = globalDeclarations.concat(globalAssignments)
 console.log(globalDeclarations)
 ```
 
-When we execute the above code (with our [`sample.js`](https://github.com/divyamamgai/skope/blob/master/article/scripts/sample.js)), we expect the output to be `a`, `d`, `e`, and `f`.
+When we execute the above code (with our [`sample.js`](https://gist.github.com/divyamamgai/93c1b55e7c38faa6f28e10df555da862)), we expect the output to be `a`, `d`, `e`, and `f`.
 
 ### Limitations of our solution
 
