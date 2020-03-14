@@ -5,7 +5,7 @@
   "author": "Divya Mamgai <divyamamgai21@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "acorn": "^6.1.1",
+    "acorn": "^6.4.1",
     "acorn-globals": "^4.3.0",
     "acorn-walk": "^6.1.1"
   },
